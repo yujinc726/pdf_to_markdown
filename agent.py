@@ -2,7 +2,6 @@ from openai import OpenAI
 from agents import Agent, Runner
 from document_parser import document_parser
 import streamlit as st
-import asyncio
 
 openAI_API_key = st.secrets.get("OPENAI_API_KEY")
 client = OpenAI(api_key=openAI_API_key)
@@ -18,6 +17,7 @@ async def convert_pdf_to_markdown(pdf_path, user_requirements, translate):
     - Inconsistent styles or errors in markdown syntax.
     - Only return the markdown content, no other text or comments.
     - print the markdown box in the console
+    - don't omit any content that is important
     
     pdf path: {pdf_path}
     User requirements: {user_requirements}
