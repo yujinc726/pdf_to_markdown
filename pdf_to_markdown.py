@@ -4,13 +4,18 @@ import os
 import json
 import tempfile
 from openai import OpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.tools import tool
 from langchain.agents import initialize_agent, AgentType
-from langchain.chat_models import ChatOpenAI
 from io import BytesIO
 
 # OpenAI 클라이언트 초기화
-openai_client = OpenAI(api_key=st.secrets.get("OPENAI_API_KEY"))
+api_key = st.secrets.get("OPENAI_API_KEY")
+if not api_key:
+    st.error("OpenAI API 키가 설정되지 않았습니다. Streamlit Cloud의 Secrets에서 OPENAI_API_KEY를 설정해주세요.")
+    st.stop()
+
+openai_client = OpenAI(api_key=api_key)
 
 # Upstage Document AI를 Tool로 정의
 @tool
