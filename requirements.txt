@@ -1,3 +1,4 @@
 streamlit
 openai-agents
 nest_asyncio
+st-gsheets-connection

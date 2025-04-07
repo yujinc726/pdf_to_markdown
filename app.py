@@ -3,6 +3,7 @@ import tempfile
 import os
 from agent import convert_pdf_to_markdown
 import asyncio
+from streamlit_gsheets import GSheetsConnection
 
 # 페이지 설정 최적화
 st.set_page_config(
@@ -35,6 +36,25 @@ async def main():
         translate = st.checkbox("한국어 번역", value=False)
 
         convert_button = st.button("Convert", type="primary", use_container_width=True)
+
+        st.subheader("감사의 편지 보내기")
+        message = st.text_area("감사의 편지를 입력하세요", height=150)
+        send_button = st.button("보내기", type="primary", use_container_width=True)
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        if send_button and message.strip():
+            df = conn.read(worksheet="Sheet1", ttl=0)  # 캐시 없이 최신 데이터 가져오기
+            if df.empty or df.columns[0] != "Message":
+                df = st.dataframe({"Message": []})  # 빈 데이터프레임 초기화
+                
+            # 새 메시지 추가
+            new_row = {"Message": message}
+            df = df.append(new_row, ignore_index=True)
+            
+            # Google Sheets에 업데이트
+            conn.update(worksheet="Sheet1", data=df)
+            st.success("편지가 저장되었습니다!")
+        elif send_button:
+            st.warning("내용을 입력해주세요!")
 
     with right_column:
         if convert_button:
