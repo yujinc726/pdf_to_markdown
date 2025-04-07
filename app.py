@@ -16,12 +16,12 @@ st.set_page_config(
 )
 
 async def main():
-
+    st.title("PDF to Markdown Converter")
     # Create two columns with a more balanced ratio
     left_column, right_column = st.columns([2, 3])
-
+    
     with left_column:
-        st.title("PDF to Markdown Converter")
+        
         st.write("Made by 차유진")
         # 입력 컨트롤
         uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
