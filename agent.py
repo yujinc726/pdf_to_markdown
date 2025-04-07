@@ -3,7 +3,8 @@ from openai import OpenAI
 from agents import Agent, Runner
 from document_parser import document_parser
 
-client = OpenAI(api_key="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")
+openAI_API_key = st.secrets.get("OPENAI_API_KEY")
+client = OpenAI(api_key=openAI_API_key)
 
 def convert_pdf_to_markdown(pdf_path, user_requirements, translate):
     agent = Agent(
