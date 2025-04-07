@@ -16,8 +16,8 @@ async def convert_pdf_to_markdown(pdf_path, user_requirements, translate):
     - Missing or unclear content (e.g., incomplete sections, unreadable charts).
     - Inconsistent styles or errors in markdown syntax.
     - Only return the markdown content, no other text or comments.
-    - print the markdown box in the console
-    - don't omit any content that is important
+    - Print the markdown box in the console
+    - Don't omit any content that is important
     
     pdf path: {pdf_path}
     User requirements: {user_requirements}
