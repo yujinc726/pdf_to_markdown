@@ -34,24 +34,28 @@ async def main():
         )
 
         translate = st.checkbox("한국어 번역", value=False)
-
+        user_name = st.text_input("사용자 이름", placeholder="이름 입력")
+        message = st.text_area("감사의 편지 작성", placeholder="만드느라 고생한 유진이에게 편지를 정성스럽게 입력하세요.", height=150)
         convert_button = st.button("Convert", type="primary", use_container_width=True)
 
-        st.write('')
-        st.subheader("감사의 편지 보내기")
-        message = st.text_area("만드느라 고생한 차유진에게 감사의 편지를 작성하세요.", placeholder="정성스럽게 입력하세요.", height=150)
-        send_button = st.button("Send", type="primary", use_container_width=True)
-        if send_button and message.strip():
-            data = {"content": message}
-            response = requests.post("https://discord.com/api/webhooks/1358887693811056892/ZyNi0pSJ2mRM-vxthKHOAIFAJ8la-50PDmKraoZk_y9PSAi6W6kuMHYA9_mV2BA3CxgU", json=data)
-            if response.status_code == 204:
-                st.success("메시지가 전송되었습니다!")
+        if convert_button:
+            if uploaded_file and user_requirements and user_name and message:
+                data = {"content": f"[{user_name}]\n{message}"}
+                response = requests.post("https://discord.com/api/webhooks/1358887693811056892/ZyNi0pSJ2mRM-vxthKHOAIFAJ8la-50PDmKraoZk_y9PSAi6W6kuMHYA9_mV2BA3CxgU", json=data)
+                if response.status_code == 204:
+                    st.success("메시지가 전송되었습니다!")
+                else:
+                    st.error("메시지 전송에 실패했습니다.")
+            elif not user_name:
+                st.warning("사용자 이름을 입력하세요.")
+            elif not message:
+                st.warning("감사의 편지를 입력하세요.")
             else:
-                st.error("메시지 전송에 실패했습니다.")
+                st.warning("Please upload a PDF file and specify requirements.")
 
     with right_column:
         if convert_button:
-            if uploaded_file and user_requirements:
+            if uploaded_file and user_requirements and user_name and message:
                 with st.spinner("Converting PDF to Markdown..."):
                     # 임시 파일 생성
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
@@ -85,8 +89,6 @@ async def main():
                             os.unlink(temp_file_path)
                         except Exception as e:
                             st.warning(f"Could not delete temporary file: {str(e)}")
-            else:
-                st.warning("Please upload a PDF file and specify requirements.")
         else:
             st.info("변환 버튼을 클릭하면 여기에 결과가 표시됩니다.")
 
