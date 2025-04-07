@@ -1,3 +1,4 @@
 streamlit
 openai
 agents
+tensorflow==1.15.0
