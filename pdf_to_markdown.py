@@ -15,7 +15,11 @@ if not api_key:
     st.error("OpenAI API 키가 설정되지 않았습니다. Streamlit Cloud의 Secrets에서 OPENAI_API_KEY를 설정해주세요.")
     st.stop()
 
-openai_client = OpenAI(api_key=api_key)
+try:
+    openai_client = OpenAI(api_key=api_key)
+except Exception as e:
+    st.error(f"OpenAI 클라이언트 초기화 중 오류가 발생했습니다: {str(e)}")
+    st.stop()
 
 # Upstage Document AI를 Tool로 정의
 @tool
