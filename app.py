@@ -51,7 +51,7 @@ async def main():
             elif not message:
                 st.warning("감사의 편지를 입력하세요.")
             else:
-                st.warning("Please upload a PDF file and specify requirements.")
+                st.warning("PDF 파일을 업로드하세요.")
 
     with right_column:
         if convert_button:
@@ -71,6 +71,7 @@ async def main():
                             return
 
                         # 결과 표시
+                        st.info("변환이 완료되었습니다. Notion에 붙여 넣으세요.")
                         st.subheader("Converted Markdown")
                         output_filename = f"{os.path.splitext(uploaded_file.name)[0]}.md"
                         markdown_bytes = markdown_content.encode('utf-8')
