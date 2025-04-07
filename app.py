@@ -4,6 +4,7 @@ import os
 from agent import convert_pdf_to_markdown
 import asyncio
 from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 
 # 페이지 설정 최적화
 st.set_page_config(
@@ -43,12 +44,12 @@ async def main():
         conn = st.connection("gsheets", type=GSheetsConnection)
         if send_button and message.strip():
             df = conn.read(worksheet="Sheet1", ttl=0)  # 캐시 없이 최신 데이터 가져오기
-            if df.empty or df.columns[0] != "Message":
-                df = st.dataframe({"Message": []})  # 빈 데이터프레임 초기화
+            if df.empty or "Message" not in df.columns:
+                df = pd.DataFrame({"Message": []})  # 빈 데이터프레임 초기화
                 
             # 새 메시지 추가
             new_row = {"Message": message}
-            df = df.append(new_row, ignore_index=True)
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             
             # Google Sheets에 업데이트
             conn.update(worksheet="Sheet1", data=df)
