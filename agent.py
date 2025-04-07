@@ -2,11 +2,12 @@ from openai import OpenAI
 from agents import Agent, Runner
 from document_parser import document_parser
 import streamlit as st
+import asyncio
 
 openAI_API_key = st.secrets.get("OPENAI_API_KEY")
 client = OpenAI(api_key=openAI_API_key)
 
-def convert_pdf_to_markdown(pdf_path, user_requirements, translate):
+async def convert_pdf_to_markdown(pdf_path, user_requirements, translate):
     agent = Agent(
     model='gpt-4o',
     name="pdf document parser",
@@ -25,5 +26,6 @@ def convert_pdf_to_markdown(pdf_path, user_requirements, translate):
     If the content has errors or doesn't meet the requirements, revise it to improve clarity, structure, and completeness while preserving the original meaning. Provide the refined markdown content as output.
     """,
     tools=[document_parser,])
-    markdown = Runner.run_sync(agent, user_requirements)
+    
+    markdown = await Runner.run(agent, user_requirements)
     return markdown.final_output

@@ -2,8 +2,9 @@ import streamlit as st
 import tempfile
 import os
 from agent import convert_pdf_to_markdown
+import asyncio
 
-def main():
+async def main():
     st.title("PDF to Markdown Converter")
     st.write("Made by 차유진")
 
@@ -27,7 +28,7 @@ def main():
 
                 try:
                     # Convert PDF to Markdown
-                    markdown_content = str(convert_pdf_to_markdown(temp_file_path, user_requirements, translate))
+                    markdown_content = str(await convert_pdf_to_markdown(temp_file_path, user_requirements, translate))
 
                     if "Error" in markdown_content:
                         st.error(markdown_content)
@@ -56,4 +57,4 @@ def main():
             st.warning("Please upload a PDF file and specify requirements.")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
