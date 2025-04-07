@@ -3,8 +3,7 @@ import tempfile
 import os
 from agent import convert_pdf_to_markdown
 import asyncio
-from streamlit_gsheets import GSheetsConnection
-import pandas as pd
+import requests
 
 # 페이지 설정 최적화
 st.set_page_config(
@@ -29,7 +28,7 @@ async def main():
         uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
         
         user_requirements = st.text_area(
-            "요구사항 입력",
+            "AI 요구사항 입력",
             value="내용은 수정하지 말고 형식만 올바르게 수정\n강의내용과 무관한 학교명, 저작권 표시, 페이지 번호 등은 무시",
             height=150
         )
@@ -38,24 +37,17 @@ async def main():
 
         convert_button = st.button("Convert", type="primary", use_container_width=True)
 
+        st.write('')
         st.subheader("감사의 편지 보내기")
-        message = st.text_area("감사의 편지를 입력하세요", height=150)
-        send_button = st.button("보내기", type="primary", use_container_width=True)
-        conn = st.connection("gsheets", type=GSheetsConnection)
+        message = st.text_area("만드느라 고생한 차유진에게 감사의 편지를 작성하세요.", placeholder="정성스럽게 입력하세요.", height=150)
+        send_button = st.button("Send", type="primary", use_container_width=True)
         if send_button and message.strip():
-            df = conn.read(worksheet="Sheet1", ttl=0)  # 캐시 없이 최신 데이터 가져오기
-            if df.empty or "Message" not in df.columns:
-                df = pd.DataFrame({"Message": []})  # 빈 데이터프레임 초기화
-                
-            # 새 메시지 추가
-            new_row = {"Message": message}
-            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-            
-            # Google Sheets에 업데이트
-            conn.update(worksheet="Sheet1", data=df)
-            st.success("편지가 저장되었습니다!")
-        elif send_button:
-            st.warning("내용을 입력해주세요!")
+            data = {"content": message}
+            response = requests.post("https://discord.com/api/webhooks/1358887693811056892/ZyNi0pSJ2mRM-vxthKHOAIFAJ8la-50PDmKraoZk_y9PSAi6W6kuMHYA9_mV2BA3CxgU", json=data)
+            if response.status_code == 204:
+                st.success("메시지가 전송되었습니다!")
+            else:
+                st.error("메시지 전송에 실패했습니다.")
 
     with right_column:
         if convert_button:
