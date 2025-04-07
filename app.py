@@ -7,7 +7,7 @@ import asyncio
 # 페이지 설정 최적화
 st.set_page_config(
     page_title="PDF to Markdown Converter",
-    page_icon="📄",
+    page_icon="🔄",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
