@@ -1,7 +1,7 @@
-import openai
 from openai import OpenAI
 from agents import Agent, Runner
 from document_parser import document_parser
+import streamlit as st
 
 openAI_API_key = st.secrets.get("OPENAI_API_KEY")
 client = OpenAI(api_key=openAI_API_key)
